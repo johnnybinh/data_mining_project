@@ -1,0 +1,55 @@
+'C te d Ivoire' | 2023
+'C te d Ivoire' | 2022
+'C te d Ivoire' | 2021
+'C te d Ivoire' | 2020
+'C te d Ivoire' | 2019
+'DR Congo' | 2023
+'DR Congo' | 2022
+'DR Congo' | 2019
+'Hong Kong SAR of China' | 2023
+'Hong Kong SAR of China' | 2022
+'Hong Kong SAR of China' | 2021
+'Hong Kong SAR of China' | 2020
+'Hong Kong SAR of China' | 2019
+Kosovo | 2023
+Kosovo | 2022
+Kosovo | 2021
+Kosovo | 2020
+Kosovo | 2019
+'Lao PDR' | 2023
+'Lao PDR' | 2022
+'Lao PDR' | 2021
+'Lao PDR' | 2020
+'Lao PDR' | 2019
+Macedonia | 2019
+'North Cyprus' | 2021
+'North Cyprus' | 2020
+'North Cyprus' | 2019
+'State of Palestine' | 2021
+'State of Palestine' | 2020
+'State of Palestine' | 2019
+Swaziland | 2020
+Swaziland | 2019
+'Taiwan Province of China' | 2023
+'Taiwan Province of China' | 2022
+'Taiwan Province of China' | 2021
+'Taiwan Province of China' | 2020
+'Taiwan Province of China' | 2019
+Tanzania | 2023
+Tanzania | 2022
+Tanzania | 2021
+Tanzania | 2020
+Tanzania | 2019
+'Czech Republic' | 2017
+'Taiwan Province of China' | 2017
+Russia | 2017
+'South Korea' | 2017
+'North Cyprus' | 2017
+Turkey | 2017
+'Hong Kong S.A.R. of China' | 2017
+Kosovo | 2017
+Macedonia | 2017
+Vietnam | 2017
+'Palestinian Territories' | 2017
+'Ivory Coast' | 2017
+Tanzania | 2017

@@ -1,6 +1,11 @@
 # Preprocess
+```java
 mvn exec:java "-Dexec.mainClass=com.nguyenthebinh.preprocess.Preprocess"
 
+mvn exec:java "-Dexec.mainClass=com.nguyenthebinh.preprocess.PreprocessIHME"
+
+mvn exec:java "-Dexec.mainClass=com.nguyenthebinh.preprocess.MergeFinal"
+```
 Write Name Here: Do Dang Thien Hai
 
 ## Task List

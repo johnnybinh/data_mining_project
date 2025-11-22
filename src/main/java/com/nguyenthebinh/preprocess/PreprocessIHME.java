@@ -11,10 +11,20 @@ import weka.filters.unsupervised.attribute.Remove;
 import weka.filters.unsupervised.attribute.ReplaceMissingValues;
 import weka.filters.unsupervised.attribute.Normalize;
 
+public class PreprocessIHME {
 
-public class Preprocess {
+    // Remove single quotes from CSV (in-memory) — returns cleaned path
+    public static String cleanIHME(String inputFile, String outputFile) throws Exception {
+        List<String> lines = java.nio.file.Files.readAllLines(java.nio.file.Paths.get(inputFile));
+        List<String> out = new ArrayList<>();
+        for (String l : lines) {
+            out.add(l.replace("'", ""));
+        }
+        java.nio.file.Files.write(java.nio.file.Paths.get(outputFile), out);
+        System.out.println("IHME: cleaned quotes saved to " + outputFile);
+        return outputFile;
+    }
 
-    // compute percentile (used by IQR)
     private static double percentile(List<Double> vals, double p) {
         if (vals == null || vals.isEmpty()) return Double.NaN;
         Collections.sort(vals);
@@ -30,20 +40,18 @@ public class Preprocess {
         return vals.get(lower) + frac * (vals.get(upper) - vals.get(lower));
     }
 
-    // Step 1: Fill missing values using Weka filter
     public static Instances fillMissing(Instances data) throws Exception {
         ReplaceMissingValues rmv = new ReplaceMissingValues();
         rmv.setInputFormat(data);
-        Instances out = Filter.useFilter(data, rmv);
-        return out;
+        return Filter.useFilter(data, rmv);
     }
 
-    // Step 2: Remove attributes by name list 
+    // Remove a set of attributes by name (if present)
     public static Instances removeAttributesByName(Instances data, String[] removeNames) throws Exception {
         List<Integer> idxList = new ArrayList<>();
         for (String name : removeNames) {
             Attribute a = data.attribute(name);
-            if (a != null) idxList.add(a.index() + 1); // weka 1-based
+            if (a != null) idxList.add(a.index() + 1);
         }
         if (idxList.isEmpty()) return data;
         Collections.sort(idxList);
@@ -58,8 +66,6 @@ public class Preprocess {
         return Filter.useFilter(data, rm);
     }
 
-    // Step 3: Remove outlier instances using IQR across numeric attributes, skipping excludeAttrNames
-    // excludeAttrNames: comma-separated attribute names (e.g., "country_name,year")
     public static Instances removeOutliersIQR(Instances data, String excludeAttrNames) throws Exception {
         Set<String> excludeSet = new HashSet<>();
         if (excludeAttrNames != null && !excludeAttrNames.isEmpty()) {
@@ -91,51 +97,37 @@ public class Preprocess {
             upper[a] = q3 + 1.5 * iqr;
         }
 
-        boolean[] isOut = new boolean[N];
+        boolean[] out = new boolean[N];
         for (int i = 0; i < N; i++) {
             Instance inst = data.instance(i);
-            boolean outlier = false;
+            boolean isOut = false;
             for (int a = 0; a < A; a++) {
                 if (Double.isNaN(lower[a]) || Double.isNaN(upper[a])) continue;
                 if (inst.isMissing(a)) continue;
                 double v = inst.value(a);
-                if (v < lower[a] || v > upper[a]) { outlier = true; break; }
+                if (v < lower[a] || v > upper[a]) { isOut = true; break; }
             }
-            isOut[i] = outlier;
+            out[i] = isOut;
         }
 
         Instances cleaned = new Instances(data, 0);
         int removed = 0;
         for (int i = 0; i < N; i++) {
-            if (!isOut[i]) cleaned.add((Instance) data.instance(i).copy());
+            if (!out[i]) cleaned.add((Instance) data.instance(i).copy());
             else removed++;
         }
-        System.out.println("WHR: Outliers removed = " + removed);
+        System.out.println("IHME: Outliers removed = " + removed);
         return cleaned;
     }
 
-    // Step 4: Normalize numeric attributes except excludeAttrNames 
+    // Normalize numeric except exclusions (same approach as WHR)
     public static Instances normalizeExcept(Instances data, String excludeAttrNames) throws Exception {
         Set<String> excludeSet = new HashSet<>();
         if (excludeAttrNames != null && !excludeAttrNames.isEmpty()) {
             for (String s : excludeAttrNames.split(",")) excludeSet.add(s.trim());
         }
 
-        // Build list of indices to normalize (1-based)
-        List<Integer> normIdx = new ArrayList<>();
-        for (int a = 0; a < data.numAttributes(); a++) {
-            Attribute att = data.attribute(a);
-            if (!att.isNumeric()) continue;
-            if (excludeSet.contains(att.name())) continue;
-            normIdx.add(a + 1);
-        }
-
-        if (normIdx.isEmpty()) return data;
-
-
-        // Simpler approach: remove excluded attributes, normalize the rest, then insert excluded back
-
-        // Save excluded attributes
+        // Save excluded attributes and values
         ArrayList<Attribute> excludedAttrs = new ArrayList<>();
         List<double[]> excludedValues = new ArrayList<>();
         for (String ex : excludeSet) {
@@ -148,7 +140,6 @@ public class Preprocess {
             }
         }
 
-        // Remove excluded attributes (by index list)
         if (!excludedAttrs.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             for (Attribute a : excludedAttrs) {
@@ -161,12 +152,11 @@ public class Preprocess {
             data = Filter.useFilter(data, rm);
         }
 
-        // Normalize remaining
         Normalize norm = new Normalize();
         norm.setInputFormat(data);
         Instances normalized = Filter.useFilter(data, norm);
 
-        // Insert excluded attributes back at their original positions
+        // Insert excluded attributes back
         for (int k = excludedAttrs.size() - 1; k >= 0; k--) {
             Attribute a = excludedAttrs.get(k);
             int pos = a.index();
@@ -176,11 +166,10 @@ public class Preprocess {
                 normalized.instance(i).setValue(pos, vals[i]);
             }
         }
-
         return normalized;
     }
 
-    // Step 5: Print correlation matrix to CSV for selected numeric attrs (order list)
+    // Save correlation matrix CSV using provided order of numeric attributes
     public static void saveCorrelationMatrixCSV(Instances data, String[] order, String outCsvPath) {
         try (PrintWriter pw = new PrintWriter(new FileWriter(outCsvPath))) {
             int n = order.length;
@@ -202,13 +191,12 @@ public class Preprocess {
                 }
                 pw.println();
             }
-            System.out.println("WHR: Correlation matrix saved to: " + outCsvPath);
+            System.out.println("IHME: Correlation matrix saved to: " + outCsvPath);
         } catch (Exception e) {
-            System.out.println("WHR: Error saving correlation CSV: " + e.getMessage());
+            System.out.println("IHME: Error saving correlation CSV: " + e.getMessage());
         }
     }
 
-    // Save ARFF
     public static void saveArff(Instances data, String path) throws Exception {
         ArffSaver saver = new ArffSaver();
         saver.setInstances(data);
@@ -216,7 +204,6 @@ public class Preprocess {
         saver.writeBatch();
     }
 
-    // Save CSV
     public static void saveCsv(Instances data, String path) throws Exception {
         CSVSaver saver = new CSVSaver();
         saver.setInstances(data);
@@ -224,50 +211,50 @@ public class Preprocess {
         saver.writeBatch();
     }
 
-    // MAIN for WHR
+    // MAIN
     public static void main(String[] args) throws Exception {
-        String inPath = "./datasets/WHR_merged_3.csv";
-        String outCsv = "./datasets/WHR_preprocessed.csv";
-        String outArff = "./datasets/WHR_preprocessed.arff";
-        String corrCsv = "./datasets/WHR_correlation_matrix.csv";
+        String inPath = "./datasets/IHME-GBD_2023_DATA-f085d7ea-1.csv";
+        String cleaned = "./datasets/IHME_clean.csv";
+        String outCsv = "./datasets/IHME_preprocessed.csv";
+        String outArff = "./datasets/IHME_preprocessed.arff";
+        String corrCsv = "./datasets/IHME_correlation_matrix.csv";
 
-        DataSource src = new DataSource(inPath);
+        // 0) clean quotes (example: 'United States' -> United States)
+        String cleanedPath = cleanIHME(inPath, cleaned);
+
+        DataSource src = new DataSource(cleanedPath);
         Instances data = src.getDataSet();
 
-        System.out.println("WHR: Loaded instances=" + data.numInstances() + " attrs=" + data.numAttributes());
+        System.out.println("IHME: Loaded instances=" + data.numInstances() + " attrs=" + data.numAttributes());
 
-        // 1) fill missing
+        // 1) fill missing values
         data = fillMissing(data);
 
-        // 2) remove useless attributes (example: if there are duplicated/confusing columns)
+        // 2) remove useless: sex/age/cause ids/names and metric_id if present
         String[] removeNames = new String[] {
-            // add any attribute names you want to remove, or leave empty
-            //"upperwhisker", "lowerwhisker"
+            "sex_id","sex_name","age_id","age_name","cause_id","cause_name","location_id","metric_id"
         };
         data = removeAttributesByName(data, removeNames);
 
-        // 3) remove outliers except country_name and year
-        data = removeOutliersIQR(data, "country_name,year");
+        // 3) remove outliers excluding location_name and year 
+        data = removeOutliersIQR(data, "location_name,year");
 
-        // 4) normalize except country_name and year
-        data = normalizeExcept(data, "country_name,year");
+        // 4) normalize except location_name and year
+        data = normalizeExcept(data, "location_name,year");
 
-        // 5) save correlation matrix for chosen numeric order
+        // 5) save correlation matrix for these numeric attrs 
         String[] order = new String[] {
-            "ladder_score",
-            "log_gdp_per_capita",
-            "social_support",
-            "healthy_life_expectancy",
-            "freedom_to_make_life_choices",
-            "generosity",
-            "perceptions_of_corruption"
+            "val","upper","lower"
         };
-        saveCorrelationMatrixCSV(data, order, corrCsv);
+        // ensure attributes exist
+        List<String> exist = new ArrayList<>();
+        for (String s : order) if (data.attribute(s) != null) exist.add(s);
+        saveCorrelationMatrixCSV(data, exist.toArray(new String[0]), corrCsv);
 
         // 6) save outputs
         saveArff(data, outArff);
         saveCsv(data, outCsv);
 
-        System.out.println("WHR: Preprocessing completed. Saved: " + outCsv + " and " + outArff);
+        System.out.println("IHME: Preprocessing completed. Saved: " + outCsv + " and " + outArff);
     }
 }
