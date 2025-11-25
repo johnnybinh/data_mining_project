@@ -26,14 +26,19 @@ public class PreprocessIHME {
     }
 
     private static double percentile(List<Double> vals, double p) {
-        if (vals == null || vals.isEmpty()) return Double.NaN;
+        if (vals == null || vals.isEmpty())
+            return Double.NaN;
         Collections.sort(vals);
-        if (p <= 0) return vals.get(0);
-        if (p >= 100) return vals.get(vals.size() - 1);
+        if (p <= 0)
+            return vals.get(0);
+        if (p >= 100)
+            return vals.get(vals.size() - 1);
         double n = vals.size();
         double pos = p * (n + 1) / 100.0;
-        if (pos <= 1.0) return vals.get(0);
-        if (pos >= n) return vals.get(vals.size() - 1);
+        if (pos <= 1.0)
+            return vals.get(0);
+        if (pos >= n)
+            return vals.get(vals.size() - 1);
         int lower = (int) Math.floor(pos) - 1;
         int upper = lower + 1;
         double frac = pos - Math.floor(pos);
@@ -51,13 +56,16 @@ public class PreprocessIHME {
         List<Integer> idxList = new ArrayList<>();
         for (String name : removeNames) {
             Attribute a = data.attribute(name);
-            if (a != null) idxList.add(a.index() + 1);
+            if (a != null)
+                idxList.add(a.index() + 1);
         }
-        if (idxList.isEmpty()) return data;
+        if (idxList.isEmpty())
+            return data;
         Collections.sort(idxList);
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < idxList.size(); i++) {
-            if (i > 0) sb.append(",");
+            if (i > 0)
+                sb.append(",");
             sb.append(idxList.get(i));
         }
         Remove rm = new Remove();
@@ -69,7 +77,8 @@ public class PreprocessIHME {
     public static Instances removeOutliersIQR(Instances data, String excludeAttrNames) throws Exception {
         Set<String> excludeSet = new HashSet<>();
         if (excludeAttrNames != null && !excludeAttrNames.isEmpty()) {
-            for (String s : excludeAttrNames.split(",")) excludeSet.add(s.trim());
+            for (String s : excludeAttrNames.split(","))
+                excludeSet.add(s.trim());
         }
 
         int A = data.numAttributes();
@@ -81,15 +90,19 @@ public class PreprocessIHME {
 
         for (int a = 0; a < A; a++) {
             Attribute att = data.attribute(a);
-            if (!att.isNumeric()) continue;
-            if (excludeSet.contains(att.name())) continue;
+            if (!att.isNumeric())
+                continue;
+            if (excludeSet.contains(att.name()))
+                continue;
 
             List<Double> vals = new ArrayList<>();
             for (int i = 0; i < N; i++) {
                 Instance inst = data.instance(i);
-                if (!inst.isMissing(a)) vals.add(inst.value(a));
+                if (!inst.isMissing(a))
+                    vals.add(inst.value(a));
             }
-            if (vals.size() < 5) continue;
+            if (vals.size() < 5)
+                continue;
             double q1 = percentile(vals, 25);
             double q3 = percentile(vals, 75);
             double iqr = q3 - q1;
@@ -102,10 +115,15 @@ public class PreprocessIHME {
             Instance inst = data.instance(i);
             boolean isOut = false;
             for (int a = 0; a < A; a++) {
-                if (Double.isNaN(lower[a]) || Double.isNaN(upper[a])) continue;
-                if (inst.isMissing(a)) continue;
+                if (Double.isNaN(lower[a]) || Double.isNaN(upper[a]))
+                    continue;
+                if (inst.isMissing(a))
+                    continue;
                 double v = inst.value(a);
-                if (v < lower[a] || v > upper[a]) { isOut = true; break; }
+                if (v < lower[a] || v > upper[a]) {
+                    isOut = true;
+                    break;
+                }
             }
             out[i] = isOut;
         }
@@ -113,8 +131,10 @@ public class PreprocessIHME {
         Instances cleaned = new Instances(data, 0);
         int removed = 0;
         for (int i = 0; i < N; i++) {
-            if (!out[i]) cleaned.add((Instance) data.instance(i).copy());
-            else removed++;
+            if (!out[i])
+                cleaned.add((Instance) data.instance(i).copy());
+            else
+                removed++;
         }
         System.out.println("IHME: Outliers removed = " + removed);
         return cleaned;
@@ -124,7 +144,8 @@ public class PreprocessIHME {
     public static Instances normalizeExcept(Instances data, String excludeAttrNames) throws Exception {
         Set<String> excludeSet = new HashSet<>();
         if (excludeAttrNames != null && !excludeAttrNames.isEmpty()) {
-            for (String s : excludeAttrNames.split(",")) excludeSet.add(s.trim());
+            for (String s : excludeAttrNames.split(","))
+                excludeSet.add(s.trim());
         }
 
         // Save excluded attributes and values
@@ -135,7 +156,8 @@ public class PreprocessIHME {
             if (a != null) {
                 excludedAttrs.add(a);
                 double[] vals = new double[data.numInstances()];
-                for (int i = 0; i < data.numInstances(); i++) vals[i] = data.instance(i).value(a.index());
+                for (int i = 0; i < data.numInstances(); i++)
+                    vals[i] = data.instance(i).value(a.index());
                 excludedValues.add(vals);
             }
         }
@@ -143,7 +165,8 @@ public class PreprocessIHME {
         if (!excludedAttrs.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             for (Attribute a : excludedAttrs) {
-                if (sb.length() > 0) sb.append(",");
+                if (sb.length() > 0)
+                    sb.append(",");
                 sb.append(a.index() + 1);
             }
             Remove rm = new Remove();
@@ -174,11 +197,13 @@ public class PreprocessIHME {
         try (PrintWriter pw = new PrintWriter(new FileWriter(outCsvPath))) {
             int n = order.length;
             int[] idx = new int[n];
-            for (int i = 0; i < n; i++) idx[i] = data.attribute(order[i]).index();
+            for (int i = 0; i < n; i++)
+                idx[i] = data.attribute(order[i]).index();
 
             // header
             pw.print("attr");
-            for (String s : order) pw.print("," + s);
+            for (String s : order)
+                pw.print("," + s);
             pw.println();
 
             for (int i = 0; i < n; i++) {
@@ -232,23 +257,25 @@ public class PreprocessIHME {
 
         // 2) remove useless: sex/age/cause ids/names and metric_id if present
         String[] removeNames = new String[] {
-            "sex_id","sex_name","age_id","age_name","cause_id","cause_name","location_id","metric_id"
+                "sex_id", "sex_name", "age_id", "age_name", "cause_id", "cause_name", "location_id", "metric_id"
         };
         data = removeAttributesByName(data, removeNames);
 
-        // 3) remove outliers excluding location_name and year 
+        // 3) remove outliers excluding location_name and year
         data = removeOutliersIQR(data, "location_name,year");
 
         // 4) normalize except location_name and year
         data = normalizeExcept(data, "location_name,year");
 
-        // 5) save correlation matrix for these numeric attrs 
+        // 5) save correlation matrix for these numeric attrs
         String[] order = new String[] {
-            "val","upper","lower"
+                "val", "upper", "lower"
         };
         // ensure attributes exist
         List<String> exist = new ArrayList<>();
-        for (String s : order) if (data.attribute(s) != null) exist.add(s);
+        for (String s : order)
+            if (data.attribute(s) != null)
+                exist.add(s);
         saveCorrelationMatrixCSV(data, exist.toArray(new String[0]), corrCsv);
 
         // 6) save outputs
