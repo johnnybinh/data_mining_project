@@ -7,6 +7,7 @@ import weka.core.Instances;
 import weka.core.converters.CSVLoader;
 import weka.classifiers.functions.LinearRegression;
 import weka.classifiers.Evaluation;
+import weka.core.SerializationHelper;
 
 //Linear Regresion Implementation
 public class Algo1 {
@@ -15,8 +16,9 @@ public class Algo1 {
     // test your algorithms
     public static void main(String[] args) throws Exception {
         // Load data
+        // TODO: Use CSV2arff class to convert. Remove straight usages of CSV
         CSVLoader csvLoader = new CSVLoader();
-        String filePath = "src/main/java/com/nguyenthebinh/datasets/Merged_Final_Clean_Remove.csv";
+        String filePath = "src/main/java/com/nguyenthebinh/datasets/Final_Clean.csv";
         csvLoader.setFile(new File(filePath));
         Instances dataset = csvLoader.getDataSet();
         dataset.setClassIndex(dataset.numAttributes() - 1); // set column Val as Target
@@ -36,5 +38,10 @@ public class Algo1 {
         Evaluation eval = new Evaluation(dataset);
         eval.crossValidateModel(linearRegression, dataset, 10, new Random(1));
         System.out.println(eval.toSummaryString());
+
+        // Print Stats
+        System.out.println(linearRegression.toString());
+        // Save model
+        SerializationHelper.write("src/main/java/com/nguyenthebinh/models/linearRegression.model", linearRegression);
     }
 }

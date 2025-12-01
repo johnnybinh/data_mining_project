@@ -1,0 +1,77 @@
+.summary-container {
+  padding: 2rem;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.summary-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #c15f3c;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.summary-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(193, 95, 60, 0.15);
+}
+
+.summary-card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #c15f3c;
+  margin-bottom: 1rem;
+  text-transform: capitalize;
+}
+
+.summary-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f4f3ee;
+}
+
+.stat-row:last-child {
+  border-bottom: none;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #b1ada1;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 0.95rem;
+  color: #c15f3c;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+}
+
+@media (max-width: 768px) {
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+}

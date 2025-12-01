@@ -1,0 +1,107 @@
+.quantile-plot-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.quantile-controls {
+  display: flex;
+  gap: 2rem;
+  padding: 1.5rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.quantile-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 250px;
+}
+
+.quantile-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #b1ada1;
+}
+
+.quantile-select {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  color: #1a1a1a;
+  background: #ffffff;
+  border: 2px solid #b1ada1;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23c15f3c' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 12px;
+  padding-right: 2.5rem;
+}
+
+.quantile-select:hover {
+  border-color: #c15f3c;
+}
+
+.quantile-select:focus {
+  outline: none;
+  border-color: #c15f3c;
+  box-shadow: 0 0 0 3px rgba(193, 95, 60, 0.1);
+}
+
+.quantile-plot-wrapper {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.quantile-svg {
+  display: block;
+  margin: 0 auto;
+}
+
+.quantile-info {
+  background: #f4f3ee;
+  border-left: 4px solid #c15f3c;
+  border-radius: 4px;
+  padding: 1rem;
+}
+
+.quantile-info p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #b1ada1;
+  line-height: 1.6;
+}
+
+.quantile-info strong {
+  color: #c15f3c;
+}
+
+@media (max-width: 768px) {
+  .quantile-plot-container {
+    padding: 1rem;
+  }
+
+  .quantile-controls {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .quantile-control-group {
+    width: 100%;
+  }
+}

@@ -1,0 +1,8 @@
+.histogram-container {
+  margin: 20px;
+}
+
+.histogram-svg {
+  display: block;
+  margin: 0 auto;
+}

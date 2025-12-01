@@ -1,0 +1,41 @@
+=== Background Shell 914808 ===
+Command: cd /Users/nguyenbinh/Developer/ML/data_mining_project/visualize && npm run dev
+Working Directory: /Users/nguyenbinh/Developer/ML/data_mining_project/visualize
+Started: 2025-12-01T05:51:33.083Z
+============================================================
+
+
+> data-visualization-dashboard@0.0.0 dev
+> vite
+
+
+  VITE v5.4.21  ready in 467 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+12:55:38 PM [vite] hmr update /src/App.jsx
+12:55:38 PM [vite] hmr update /src/App.css
+12:55:43 PM [vite] hmr update /src/components/BoxPlot.jsx
+12:55:46 PM [vite] hmr update /src/components/BoxPlot.jsx
+1:08:03 PM [vite] hmr update /src/App.css
+1:08:03 PM [vite] hmr update /src/App.css
+1:08:04 PM [vite] hmr update /src/App.css
+1:08:04 PM [vite] hmr update /src/components/TabNavigation.css
+1:08:05 PM [vite] hmr update /src/components/Summary.css
+1:08:05 PM [vite] hmr update /src/components/Summary.css
+1:08:06 PM [vite] hmr update /src/components/Summary.css
+1:08:07 PM [vite] hmr update /src/components/Summary.css
+1:08:10 PM [vite] hmr update /src/components/ScatterPlot.jsx
+1:08:12 PM [vite] hmr update /src/components/ScatterPlot.jsx
+1:08:14 PM [vite] hmr update /src/components/ScatterPlot.jsx
+1:08:14 PM [vite] hmr update /src/components/ScatterPlot.jsx
+1:08:17 PM [vite] hmr update /src/components/BoxPlot.jsx
+1:08:19 PM [vite] hmr update /src/components/BoxPlot.jsx
+1:08:21 PM [vite] hmr update /src/components/BoxPlot.jsx
+1:08:22 PM [vite] hmr update /src/components/BoxPlot.jsx
+1:08:23 PM [vite] hmr update /src/components/BoxPlot.jsx
+1:08:25 PM [vite] hmr update /src/index.css
+1:08:27 PM [vite] hmr update /src/components/ScatterPlot.jsx
+1:09:09 PM [vite] hmr update /src/components/TabNavigation.jsx
+1:09:10 PM [vite] hmr update /src/App.jsx
+1:09:11 PM [vite] hmr update /src/App.jsx
