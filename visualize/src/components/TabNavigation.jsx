@@ -8,7 +8,6 @@ const TabNavigation = ({ activeTab, onTabChange }) => {
     { id: 'quantile', label: 'Quantile Plot' },
     { id: 'qqplot', label: 'Q-Q Plot' },
     { id: 'correlation', label: 'Correlation Matrix' },
-    { id: 'models', label: 'WEKA Models' },
     { id: 'summary', label: 'Summary' }
   ];
 
