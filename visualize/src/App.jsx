@@ -5,7 +5,6 @@ import Histogram from "./components/Histogram";
 import QuantilePlot from "./components/QuantilePlot";
 import QQPlot from "./components/QQPlot";
 import CorrelationMatrix from "./components/CorrelationMatrix";
-import ModelVisualization from "./components/ModelVisualization";
 import Summary from "./components/Summary";
 import TabNavigation from "./components/TabNavigation";
 import { loadCSV } from "./utils/csvLoader";
@@ -97,8 +96,6 @@ function App() {
         return <QQPlot data={data} attributes={attributes} />;
       case "correlation":
         return <CorrelationMatrix data={data} attributes={attributes} />;
-      case "models":
-        return <ModelVisualization />;
       case "summary":
         return <Summary data={data} attributes={attributes} />;
       default:
